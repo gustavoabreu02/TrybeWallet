@@ -41,7 +41,6 @@ class Login extends React.Component {
   handleClick(event) {
     event.preventDefault();
     const { dispatch, history } = this.props;
-    console.log(typeof history.push);
     dispatch(actionUser(this.state));
     history.push('/carteira');
   }
