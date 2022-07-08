@@ -1,26 +1,41 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionWallet } from '../actions';
+import { actionWalletInfo } from '../actions';
 
 class HeaderWallet extends React.Component {
+/*   constructor() {
+    super();
+    this.state = {
+      valorInicial: 0,
+    };
+  }
+ */
   async componentDidMount() {
     const { dispatch } = this.props;
-    const fetchSiglasMoedas = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const fetchSiglasMoedas = await fetch(
+      'https://economia.awesomeapi.com.br/json/all',
+    );
     const data = await fetchSiglasMoedas.json();
-    const arrayMoedas = Object.keys(data).filter((value) => value !== 'USDT');
-    dispatch(actionWallet(arrayMoedas));
+    delete data.USDT;
+    const arrayMoedas = Object.keys(data);
+    dispatch(actionWalletInfo(arrayMoedas));
   }
 
   render() {
-    const { email } = this.props;
+    const { email, soma } = this.props;
+    /* const { valorInicial } = this.state; */
+    console.log(soma, 'aaaa');
     return (
       <div>
         <header>
           <span data-testid="email-field">{email}</span>
           <br />
-          <span data-testid="total-field">{0}</span>
+          <span data-testid="total-field">
+            { soma }
+          </span>
           <span data-testid="header-currency-field">BRL</span>
+          <br />
         </header>
       </div>
     );
@@ -29,11 +44,14 @@ class HeaderWallet extends React.Component {
 
 const mapStateToProps = (state) => ({
   email: state.user.email,
+  expenses: state.wallet.expenses,
+  soma: state.wallet.soma || 0,
 });
 
 HeaderWallet.propTypes = {
   email: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
+  soma: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(HeaderWallet);
