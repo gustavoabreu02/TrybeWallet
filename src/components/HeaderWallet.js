@@ -25,7 +25,6 @@ class HeaderWallet extends React.Component {
   render() {
     const { email, soma } = this.props;
     /* const { valorInicial } = this.state; */
-    console.log(soma, 'aaaa');
     return (
       <div>
         <header>

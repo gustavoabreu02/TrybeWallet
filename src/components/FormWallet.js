@@ -46,7 +46,6 @@ class FormWallet extends React.Component {
       Object.values(exchangeRates).forEach((coin) => {
         if (currency === coin.code) {
           const soma = Number(value) * Number(coin.ask);
-          console.log(somaTotal);
           dispatch(actionWalletSoma(somaTotal + soma));
         }
       });
