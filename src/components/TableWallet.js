@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionWalletDelete, actionWalletSubSoma } from '../actions';
+import { actionWalletDelete } from '../actions';
 
 class TableWallet extends React.Component {
   constructor() {
@@ -10,13 +10,9 @@ class TableWallet extends React.Component {
   }
 
   handleDelete({ target }) {
-    const { id, name } = target;
-    const { dispatch, expenses } = this.props;
-    const { value, currency, exchangeRates } = expenses[name];
-    const { ask } = exchangeRates[currency];
-    const soma = value * ask;
-    const somaTrunc = Math.trunc(soma * 100) / 100;
-    dispatch(actionWalletSubSoma(somaTrunc));
+    const { id } = target;
+    const { dispatch } = this.props;
+
     dispatch(actionWalletDelete(id));
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionWalletAllInfo, actionWalletSoma } from '../actions';
+import { actionWalletAllInfo } from '../actions';
 
 class FormWallet extends React.Component {
   constructor() {
@@ -40,14 +40,6 @@ class FormWallet extends React.Component {
         value: '',
         description: '',
         exchangeRates: {},
-      });
-      const { somaTotal } = this.props;
-      const { exchangeRates, currency, value } = this.state;
-      Object.values(exchangeRates).forEach((coin) => {
-        if (currency === coin.code) {
-          const soma = Number(value) * Number(coin.ask);
-          dispatch(actionWalletSoma(somaTotal + soma));
-        }
       });
     });
   }
@@ -147,14 +139,12 @@ class FormWallet extends React.Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
-  somaTotal: state.wallet.soma,
   expenses: state.wallet.expenses,
 });
 
 FormWallet.propTypes = {
   currencies: PropTypes.instanceOf(Object).isRequired,
   dispatch: PropTypes.func.isRequired,
-  somaTotal: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(FormWallet);

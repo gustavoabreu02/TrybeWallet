@@ -21,8 +21,7 @@ class HeaderWallet extends React.Component {
   }
 
   somaTotal() {
-    const { expenses, somaReducer } = this.props;
-    console.log(somaReducer);
+    const { expenses } = this.props;
     if (expenses.length > 0) {
       return expenses.reduce((total, despesa) => {
         const currency = despesa.exchangeRates[despesa.currency];
@@ -57,14 +56,12 @@ class HeaderWallet extends React.Component {
 const mapStateToProps = (state) => ({
   email: state.user.email,
   expenses: state.wallet.expenses,
-  somaReducer: Math.trunc(state.wallet.soma * 100) / 100 || 0,
 });
 
 HeaderWallet.propTypes = {
   email: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   expenses: PropTypes.instanceOf(Object).isRequired,
-  somaReducer: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(HeaderWallet);
