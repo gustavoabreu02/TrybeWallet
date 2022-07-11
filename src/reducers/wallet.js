@@ -1,4 +1,10 @@
-import { WALLET_INFO, WALLET_ALL_INFO, WALLET_SOMA } from '../actions';
+import {
+  WALLET_INFO,
+  WALLET_ALL_INFO,
+  WALLET_SOMA,
+  WALLET_DELETE,
+  WALLET_SUB_SOMA,
+} from '../actions';
 
 // Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
 const INITIAL_STATE = {
@@ -22,6 +28,20 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       soma: Math.trunc(action.payload.soma * 100) / 100,
+    };
+  case WALLET_DELETE:
+    return {
+      ...state,
+      expenses: [
+        ...state.expenses.filter(
+          (despesa) => Number(despesa.id) !== Number(action.payload.id),
+        ),
+      ],
+    };
+  case WALLET_SUB_SOMA:
+    return {
+      ...state,
+      soma: state.soma - action.payload.subSoma,
     };
   default:
     return state;

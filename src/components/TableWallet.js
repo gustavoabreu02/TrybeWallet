@@ -1,15 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { actionWalletDelete, actionWalletSubSoma } from '../actions';
 
 class TableWallet extends React.Component {
-  /*   constructor() {
+  constructor() {
     super();
-    this.state = {
-      valorInicial: 0,
-    };
+    this.handleDelete = this.handleDelete.bind(this);
   }
- */
+
+  handleDelete({ target }) {
+    const { id, name } = target;
+    const { dispatch, expenses } = this.props;
+    const { value, currency, exchangeRates } = expenses[name];
+    const { ask } = exchangeRates[currency];
+    const soma = value * ask;
+    const somaTrunc = Math.trunc(soma * 100) / 100;
+    dispatch(actionWalletSubSoma(somaTrunc));
+    dispatch(actionWalletDelete(id));
+  }
 
   render() {
     const { expenses } = this.props;
@@ -39,7 +48,7 @@ class TableWallet extends React.Component {
                 exchangeRates: {
                   [currency]: { name, ask },
                 },
-              }) => (
+              }, i) => (
                 <tr key={ id }>
                   <td>{description}</td>
                   <td>{tag}</td>
@@ -49,6 +58,17 @@ class TableWallet extends React.Component {
                   <td>{Number(ask).toFixed(2)}</td>
                   <td>{Number(value * ask).toFixed(2)}</td>
                   <td>Real</td>
+                  <td>
+                    <button
+                      id={ id }
+                      name={ i }
+                      type="button"
+                      data-testid="delete-btn"
+                      onClick={ this.handleDelete }
+                    >
+                      Excluir
+                    </button>
+                  </td>
                 </tr>
               ),
             )}
@@ -61,10 +81,12 @@ class TableWallet extends React.Component {
 
 const mapStateToProps = (state) => ({
   expenses: state.wallet.expenses,
+  soma: state.wallet.soma,
 });
 
 TableWallet.propTypes = {
   expenses: PropTypes.instanceOf(Object).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(TableWallet);

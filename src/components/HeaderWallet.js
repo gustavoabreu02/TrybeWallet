@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 import { actionWalletInfo } from '../actions';
 
 class HeaderWallet extends React.Component {
-/*   constructor() {
+  constructor() {
     super();
-    this.state = {
-      valorInicial: 0,
-    };
+    this.somaTotal = this.somaTotal.bind(this);
   }
- */
+
   async componentDidMount() {
     const { dispatch } = this.props;
     const fetchSiglasMoedas = await fetch(
@@ -22,16 +20,31 @@ class HeaderWallet extends React.Component {
     dispatch(actionWalletInfo(arrayMoedas));
   }
 
+  somaTotal() {
+    const { expenses, somaReducer } = this.props;
+    console.log(somaReducer);
+    if (expenses.length > 0) {
+      return expenses.reduce((total, despesa) => {
+        const currency = despesa.exchangeRates[despesa.currency];
+        const { ask } = currency;
+        const soma = despesa.value * Number(ask);
+        const somaTotal = Math.trunc(soma * 100) / 100;
+        console.log(somaTotal);
+        return total + somaTotal;
+      }, 0);
+    }
+    return 0;
+  }
+
   render() {
-    const { email, soma } = this.props;
-    /* const { valorInicial } = this.state; */
+    const { email } = this.props;
     return (
       <div>
         <header>
           <span data-testid="email-field">{email}</span>
           <br />
           <span data-testid="total-field">
-            { soma }
+            { this.somaTotal() }
           </span>
           <span data-testid="header-currency-field">BRL</span>
           <br />
@@ -44,13 +57,14 @@ class HeaderWallet extends React.Component {
 const mapStateToProps = (state) => ({
   email: state.user.email,
   expenses: state.wallet.expenses,
-  soma: state.wallet.soma || 0,
+  somaReducer: Math.trunc(state.wallet.soma * 100) / 100 || 0,
 });
 
 HeaderWallet.propTypes = {
   email: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  soma: PropTypes.number.isRequired,
+  expenses: PropTypes.instanceOf(Object).isRequired,
+  somaReducer: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(HeaderWallet);
